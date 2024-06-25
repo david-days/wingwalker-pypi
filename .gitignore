@@ -147,6 +147,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+**__pycache__
 
 # pytype static type analyzer
 .pytype/
@@ -161,3 +162,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 **/.idea/
 **/*.geany
+
+# RStudio project files
+**.Rproj.user/
+**.Rproj.user*
+**.Rproj
+**.Rhistory
+
+# MacOS
+.DS_Store
