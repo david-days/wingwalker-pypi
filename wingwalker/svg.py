@@ -1,3 +1,7 @@
+"""
+Functions to manipulate SVG files.
+"""
+
 import cairo
 import xml.etree.ElementTree as ET
 from wingwalker.output_templates import svg_template
@@ -40,11 +44,10 @@ def from_svg_template(width: int, height: int, units: str, str_tpl: str = svg_te
 
 def open_svg(width: float, height: float) -> cairo.SVGSurface:
     """
-    Creates a Cairo.SVGSurface, of the given dimensions, pointing to the fname
+    Creates a Cairo.SVGSurface, of the given dimensions
     Args:
         width (float): The width of the SVG image
         height (float): The height of the SVG image
-        fname (str): The name of the SVG file
     """
     return cairo.SVGSurface(cairo.FORMAT_ARGB32, width, height)
 

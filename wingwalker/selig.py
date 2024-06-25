@@ -3,40 +3,65 @@ Functions to parse Selig-formatted data
 """
 
 import re
-
-selig_coord_patt = '(?<=^\\s\\s)[+-]?([0-9]*[.])?[0-9]+\\s+[+-]?([0-9]*[.])?[0-9]+'
-airfoil_desig = 'airfoil'
-
-
-def convert_float(inp) -> (float, float):
-    """
-    Convert a text line into X and Y coordinates
-    """
-    floats = [float(i) for i in inp.split(' ') if i.count('.') == 1]
-    return floats[0], floats[1]
+import base
+import utils
+import argparse
 
 
-def parse_selig(stream, xs, ys, chord_len) -> str:
+def parse_selig(stream, x_coords, y_coords, c_len) -> str:
     """
     Parse Selig-formated airfoil specifications
     Args:
         stream: existing file stream
-        xs:  empty array to hold the X (chord-oriented) coordinates
-        ys: empty array to hold the Y (chord-perpendicular) coordinates
-        chord_len: float value denoting the final chord length (units not required)
+        x_coords:  empty array to hold the X (chord-oriented) coordinates
+        y_coords: empty array to hold the Y (chord-perpendicular) coordinates
+        c_len: float value denoting the final chord length (units not required)
     Returns:
         Name of the Selig-formatted airfoil
     """
-    global airfoil_desig
+    airfoil_desig = 'airfoil'
     lines = stream.readlines()
     for line in lines:
         linetxt = line.decode('utf-8')
-        if bool(re.search(selig_coord_patt, linetxt)):
-            x0, y0 = convert_float(linetxt)
-            xs.append(x0 * chord_len)
-            ys.append(y0 * chord_len)
-        elif (not str.isspace(linetxt)) & len(linetxt) != 0:
+        if bool(re.search(utils.coord_patt, linetxt)):
+            x0, y0 = utils.convert_float(linetxt)
+            x_coords.append(x0 * c_len)
+            y_coords.append(y0 * c_len)
+        elif (not str.isspace(linetxt)) and len(linetxt) != 0:
             print("Found airfoil id: " + linetxt)
             airfoil_desig = linetxt
 
-    return airfoil_desig
+    return airfoil_desig.strip()
+
+
+class Parser(base.Reader):
+    """
+    Parser for Selig-formatted airfoil specifications.
+
+    This class parses the specs, translates them into the common [x],[y] coordinates, and holds onto them for
+    further processing.
+    """
+
+    def __init__(self, filename):
+        super().__init__(filename)
+        self.filename = filename
+
+    def read(self, c_len):
+        with open(self.filename, 'rb') as file:
+            xs = []
+            ys = []
+            chord_len = c_len
+            airfoil_desig = parse_selig(file, xs, ys, chord_len)
+            return xs, ys, airfoil_desig
+
+
+if __name__ == '__main__':
+    arg_parser = argparse.ArgumentParser(description='Parse Selig-formatted airfoil specs')
+    arg_parser.add_argument('-f', '--filename', metavar='File', type=str, help='File to be parsed')
+    arg_parser.add_argument('-c', '--chord', dest='c_len', type=float, default=1.0,
+                            help='Chord length to calculate', required=False)
+    args = arg_parser.parse_args()
+    fparser = Parser(args.filename)
+    x_vals, y_vals, spec = fparser.read(args.c_len)
+    print("Airfoil specs for:  %s" % spec)
+    print(x_vals, y_vals)

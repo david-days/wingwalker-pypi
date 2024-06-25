@@ -15,5 +15,11 @@ setup(name='wingwalker',
       packages=find_packages(where="wingwalker"),
       package_dir={"": "wingwalker"},
       include_package_data=True,
-      package_data={'wingwalker': ['templates/*.tpl']}
+      package_data={
+            'wingwalker': [
+                        'templates/*.tpl',
+                        'dat/*.dat',
+                        'dat/*.txt'
+                  ]
+            }
       )
