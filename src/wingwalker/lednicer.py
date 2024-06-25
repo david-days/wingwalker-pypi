@@ -2,9 +2,9 @@
 Functions to parse Lednicer-formatted airfoil specs
 """
 
-import wingwalker.utils as utils
+import src.wingwalker.utils as utils
 import re
-import wingwalker.base as base
+import src.wingwalker.base as base
 import argparse
 
 

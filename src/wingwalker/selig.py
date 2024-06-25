@@ -3,8 +3,8 @@ Functions to parse Selig-formatted data
 """
 
 import re
-import wingwalker.base as base
-import wingwalker.utils as utils
+import src.wingwalker.base as base
+import src.wingwalker.utils as utils
 import argparse
 
 
