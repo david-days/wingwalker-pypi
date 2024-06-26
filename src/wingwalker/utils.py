@@ -2,8 +2,8 @@
  Useful general functions for wingwalker
 """
 
-import src.wingwalker.selig as selig
-import wingwalker.lednicer as lednicer
+import selig as selig
+import lednicer as lednicer
 
 coord_patt = '(?<=^\\s\\s)[+-]?([0-9]*[.])?[0-9]+\\s+[+-]?([0-9]*[.])?[0-9]+'
 
