@@ -2,7 +2,6 @@
 Functions to manipulate SVG files.
 """
 
-import cairo
 import xml.etree.ElementTree as ET
 import argparse
 from output_templates import svg_template
@@ -28,7 +27,7 @@ def substitute_placeholders(width: float, height: float, units: str, str_tpl: st
     return str_xml
 
 
-def from_svg_template(width: int, height: int, units: str, str_tpl: str = svg_template) -> ET.Element:
+def from_svg_template(width: float, height: float, units: str, str_tpl: str = svg_template) -> ET.Element:
     """
     Creates an SVG element from the given template string
     This method uses the template (passed as a string) and returns the
@@ -44,56 +43,63 @@ def from_svg_template(width: int, height: int, units: str, str_tpl: str = svg_te
     return ET.fromstring(xml_str)
 
 
-def trace_airfoil_path(surface: cairo.SVGSurface, width: float, height: float, xs: list[float], ys: list[float],
-                       offset: list[float], l_width: float = 1.0, close_loop: bool = True):
+def trace_airfoil_path(svg_root: ET.Element, xs: list[float], ys: list[float],
+                       offset: list[float], l_width: float = 0.5):
     """
     Trace out the airfoil outline as a path, looping around and back to the starting point.
 
     Draws a path that traces the shape of the airfoil, completing the circuit and closing the loop
     back at the origin of the path.
     Args:
-        surface (cairo.SVGSurface): The SVG surface for drawing
-        width (float): The width of the SVG image
-        height (float): The height of the SVG image
+        svg_root (ElementTree.Element): The SVG tree containing the drawing
         xs (list): A list of x coordinates
         ys (list): A list of y coordinates
         offset (list): x- and y-offset from [0,0] to align the trace
         l_width (float): width of the path line. Default is 1.0
-        close_loop (bool): Optional, whether to close the loop.  Defaults to true
     """
-    with cairo.Context(surface) as c:
-        c.scale(width, height)
-        c.set_source_rgb(0, 0, 0)
-        c.move_to(xs[0] + offset[X], ys[0] + offset[Y])
-        for i in range(1, len(xs)):
-            c.line_to(xs[i] + offset[X], ys[i] + offset[Y])
-        if close_loop:
-            c.line_to(xs[0] + offset[X], ys[0] + offset[Y])
-        c.set_line_width(l_width)
-        c.stroke()
+    path_def = ""
+    path_def += "M %f,%f" % (xs[0] + offset[X], ys[0] + offset[Y])
+    for i in range(1, len(xs)):
+        path_def += " L %f,%f" % (xs[i] + offset[X], ys[i] + offset[Y])
+    path_def += " L %f,%f" % (xs[0] + offset[X], ys[0] + offset[Y])
+    path = ET.SubElement(svg_root, 'path', {})
+    path.set('id', 'airfoil_trace')
+    path.set('d', path_def)
+    path.set('fill', 'none')
+    path.set('stroke', 'black')
+    path.set('stroke-width', str(l_width))
+    return svg_root
 
 
-def trace_fill_path(surface:cairo.SVGSurface, width: float, height: float, xs: list[float], ys: list[float],
-                    offset: list[float], l_width: float = 1.0, factor: int = 7):
-    with cairo.Context(surface) as c:
-        c.scale(width, height)
-        c.set_source_rgb(0, 0, 0)
-        c.move_to(xs[0] + offset[X], ys[0] + offset[Y])
-        i = 0
-        x_len: int = len(xs) - factor
-        x_mid: int = int(len(xs) / 2)
-        while i < x_len:
-            l_offset = int(-1 * (i + factor))
-            end_i = x_len - l_offset
-            c.line_to(xs[end_i] + offset[X], ys[end_i] + offset[Y])
-            next_i = i + factor
-            c.line_to(xs[next_i] + offset[X], ys[next_i] + offset[Y])
-            i = next_i
-        c.set_line_width(l_width)
-        c.stroke()
+def trace_fill_path(svg_root: ET.Element, xs: list[float], ys: list[float], offset: list[float],
+                    l_width: float = 0.5, factor: int = 7):
+    path_def = ""
+    path_def += "M %f,%f" % (xs[0] + offset[X], ys[0] + offset[Y])
+    i = 0
+    x_len: int = len(xs) - factor
+    x_mid: int = int(len(xs) / 2)
+    while i < (x_len - (2.0 * factor)):
+        l_offset = int(i + factor)
+        end_i = x_len - l_offset
+        path_def += " L %f,%f" % (xs[end_i] + offset[X], ys[end_i] + offset[Y])
+        next_i = i + factor
+        path_def += " L %f,%f" % (xs[next_i] + offset[X], ys[next_i] + offset[Y])
+        i = next_i
+    # Trace the chord
+    path_def += " M %f,%f" % (xs[0] + offset[X], ys[0] + offset[Y])
+    x_len = len(xs) - 1
+    for i in range(0,x_mid):
+        path_def += " L %f,%f" % ((xs[i] + xs[x_len - i])/2.0 + offset[X], (ys[i] + ys[x_len - i])/2.0 + offset[Y])
+    path = ET.SubElement(svg_root, 'path', {})
+    path.set('id', 'airfoil_fill')
+    path.set('d', path_def)
+    path.set('fill', 'none')
+    path.set('stroke', 'black')
+    path.set('stroke-width', str(l_width))
+    return svg_root
 
 
-def draw_airfoil_poly(xs, ys, offset, l_width, svg_root: ET.Element) -> ET.Element:
+def draw_airfoil_poly(svg_root: ET.Element, xs, ys, offset, l_width: float = 0.5) -> ET.Element:
     """
     Creates the airfoil as a polygon with the given coordinates
     Args:
@@ -103,8 +109,7 @@ def draw_airfoil_poly(xs, ys, offset, l_width, svg_root: ET.Element) -> ET.Eleme
         l_width (float): width of the polygon line
         svg_root (ET.Element): SVG root element
     """
-    g_elem = ET.SubElement(svg_root, 'g', {})
-    poly = ET.SubElement(g_elem, 'polygon', {})
+    poly = ET.SubElement(svg_root, 'polygon', {})
     poly.set('points', ' '.join([f'{x + offset[X]},{y + offset[Y]}' for x, y in zip(xs, ys)]))
     poly.set('fill', 'none')
     poly.set('stroke', 'black')
@@ -140,34 +145,39 @@ class SvgWriter:
         xoff: float = self.c_len/10.0
         dim: float = self.c_len + (2.0 * xoff)
         t_offset: list[float] = [xoff, dim/2.0]
-        base_file = base_name + '_trace.svg'
-        with cairo.SVGSurface(base_file, dim, dim) as surface:
-            trace_airfoil_path(surface, dim, dim, self.x_coords, self.x_coords, t_offset)
-            if filled:
-                trace_fill_path(surface, dim, dim, self.y_coords, self.y_coords, t_offset)
+        trace_file = base_name + '.svg'
+        l_width = 0.5
+        svg_trace = from_svg_template(dim, dim, self.units)
+        trace_airfoil_path(svg_trace, self.x_coords, self.y_coords, t_offset, l_width)
+        if filled:
+            trace_fill_path(svg_trace, self.x_coords, self.y_coords, t_offset, l_width)
+        trace_tree = ET.ElementTree(svg_trace)
+        trace_tree.write(trace_file)
         if mirror:
             # Create mirror image using flipped y-coords
             flip_y = [j * -1.0 for j in self.y_coords]
-            mirror_file = base_name + '_trace_mirror.svg'
-            with cairo.SVGSurface(mirror_file, dim, dim) as surface:
-                trace_airfoil_path(surface, dim, dim, self.x_coords, flip_y, t_offset)
-                if filled:
-                    trace_fill_path(surface, dim, dim, self.x_coords, flip_y, t_offset)
+            mirror_file = base_name + '_mirror.svg'
+            mirror_trace = from_svg_template(dim, dim, self.units)
+            trace_airfoil_path(mirror_trace, self.x_coords, flip_y, t_offset, l_width)
+            if filled:
+                trace_fill_path(mirror_trace, self.x_coords, flip_y, t_offset, l_width)
+            mirror_tree = ET.ElementTree(mirror_trace)
+            mirror_tree.write(mirror_file)
 
     def generate_poly(self, base_name: str = 'airfoil', mirror: bool = False):
         xoff: float = self.c_len/10.0
         dim: float = self.c_len + (2.0 * xoff)
         t_offset: list[float] = [xoff, dim/2.0]
-        svg_root = from_svg_template(dim, dim)
-        draw_airfoil_poly(self.x_coords, self.y_coords, t_offset, 1.0, svg_root)
+        svg_root = from_svg_template(dim, dim, self.units)
+        draw_airfoil_poly(svg_root, self.x_coords, self.y_coords, t_offset, 0.5)
         tree = ET.ElementTree(svg_root)
-        poly_file = base_name + '_polygon.svg'
+        poly_file = base_name + '.svg'
         tree.write(poly_file)
         if mirror:
             flip_y = [j * -1.0 for j in self.y_coords]
-            mirror_root = from_svg_template(dim, dim)
-            draw_airfoil_poly(self.x_coords, flip_y, t_offset, 1.0, mirror_root)
-            mirror_file = base_name + '_polygon_mirror.svg'
+            mirror_root = from_svg_template(dim, dim, self.units)
+            draw_airfoil_poly(mirror_root, self.x_coords, flip_y, t_offset, 0.5)
+            mirror_file = base_name + '_mirror.svg'
             mirror_tree = ET.ElementTree(mirror_root)
             mirror_tree.write(mirror_file)
 
@@ -213,8 +223,8 @@ if __name__ == '__main__':
             svg_writer = SvgWriter(x, y, args.c_len, args.units)
             base_file = args.output
             if args.trace:
-                svg_writer.generate_trace(base_file, mirror=args.mirror, filled=False)
+                svg_writer.generate_trace(base_file + '_shape', mirror=args.mirror, filled=False)
             if args.fill:
-                svg_writer.generate_trace(base_file, mirror=args.mirror, filled=True)
+                svg_writer.generate_trace(base_file + '_filled', mirror=args.mirror, filled=True)
             if args.poly:
-                svg_writer.generate_poly(base_file, mirror=args.mirror)
+                svg_writer.generate_poly(base_file + '_poly', mirror=args.mirror)
