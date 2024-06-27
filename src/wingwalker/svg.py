@@ -9,6 +9,7 @@ import utils
 
 X, Y = range(2)
 
+ET.register_namespace('', 'http://www.w3.org/2000/svg')
 
 def substitute_placeholders(width: float, height: float, units: str, str_tpl: str = svg_template) -> str:
     """
@@ -151,7 +152,7 @@ class SvgWriter:
         if filled:
             trace_fill_path(svg_trace, self.x_coords, self.y_coords, t_offset, l_width)
         trace_tree = ET.ElementTree(svg_trace)
-        trace_tree.write(trace_file)
+        trace_tree.write(trace_file, xml_declaration=True, encoding='utf-8')
         if mirror:
             # Create mirror image using flipped y-coords
             flip_y = [j * -1.0 for j in self.y_coords]
@@ -161,7 +162,7 @@ class SvgWriter:
             if filled:
                 trace_fill_path(mirror_trace, self.x_coords, flip_y, t_offset, l_width)
             mirror_tree = ET.ElementTree(mirror_trace)
-            mirror_tree.write(mirror_file)
+            mirror_tree.write(mirror_file, xml_declaration=True, encoding='utf-8')
 
     def generate_poly(self, base_name: str = 'airfoil', mirror: bool = False, l_width: float = 0.5):
         xoff: float = self.c_len/10.0
@@ -171,14 +172,14 @@ class SvgWriter:
         draw_airfoil_poly(svg_root, self.x_coords, self.y_coords, t_offset, 0.5)
         tree = ET.ElementTree(svg_root)
         poly_file = base_name + '.svg'
-        tree.write(poly_file)
+        tree.write(poly_file, xml_declaration=True, encoding='utf-8')
         if mirror:
             flip_y = [j * -1.0 for j in self.y_coords]
             mirror_root = from_svg_template(dim, dim, self.units)
             draw_airfoil_poly(mirror_root, self.x_coords, flip_y, t_offset, 0.5)
             mirror_file = base_name + '_mirror.svg'
             mirror_tree = ET.ElementTree(mirror_root)
-            mirror_tree.write(mirror_file)
+            mirror_tree.write(mirror_file, xml_declaration=True, encoding='utf-8')
 
 
 if __name__ == '__main__':
