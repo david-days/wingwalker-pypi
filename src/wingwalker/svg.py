@@ -141,12 +141,11 @@ class SvgWriter:
         self.c_len = clen
         self.units = unitval
 
-    def generate_trace(self, base_name: str = 'airfoil', mirror: bool = False, filled: bool = False):
+    def generate_trace(self, base_name: str = 'airfoil', mirror: bool = False, filled: bool = False, l_width: float = 0.5):
         xoff: float = self.c_len/10.0
         dim: float = self.c_len + (2.0 * xoff)
         t_offset: list[float] = [xoff, dim/2.0]
         trace_file = base_name + '.svg'
-        l_width = 0.5
         svg_trace = from_svg_template(dim, dim, self.units)
         trace_airfoil_path(svg_trace, self.x_coords, self.y_coords, t_offset, l_width)
         if filled:
@@ -164,7 +163,7 @@ class SvgWriter:
             mirror_tree = ET.ElementTree(mirror_trace)
             mirror_tree.write(mirror_file)
 
-    def generate_poly(self, base_name: str = 'airfoil', mirror: bool = False):
+    def generate_poly(self, base_name: str = 'airfoil', mirror: bool = False, l_width: float = 0.5):
         xoff: float = self.c_len/10.0
         dim: float = self.c_len + (2.0 * xoff)
         t_offset: list[float] = [xoff, dim/2.0]
@@ -223,8 +222,8 @@ if __name__ == '__main__':
             svg_writer = SvgWriter(x, y, args.c_len, args.units)
             base_file = args.output
             if args.trace:
-                svg_writer.generate_trace(base_file + '_shape', mirror=args.mirror, filled=False)
+                svg_writer.generate_trace(base_file + '_shape', mirror=args.mirror, filled=False, l_width=1.0)
             if args.fill:
-                svg_writer.generate_trace(base_file + '_filled', mirror=args.mirror, filled=True)
+                svg_writer.generate_trace(base_file + '_filled', mirror=args.mirror, filled=True, l_width=0.75)
             if args.poly:
                 svg_writer.generate_poly(base_file + '_poly', mirror=args.mirror)
