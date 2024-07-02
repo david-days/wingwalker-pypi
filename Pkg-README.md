@@ -32,9 +32,6 @@ $ python svg.py -i path/to/seligdatfile.txt -o path/to/svg/files/nc2-1010-li -s 
 ```
 
 The resulting SVGs can be used as the basis for a 3D printed wing with the given airfoil.
-## Contributing
-
-Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
 
 ## License
 
