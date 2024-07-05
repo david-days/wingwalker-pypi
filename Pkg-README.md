@@ -23,15 +23,26 @@ $ pip install wingwalker
 
 ## Usage
 
-The python modules can be used directly, as well as via imports to other scripts.
+The wingwalker modules can be used directly and help cut back on multiple custom steps.
 
-To generate SVG drawings from a Selig-formatted DAT file, use a command similar to the following:
+For example, to read in an airfoil data file, start with the follwoing code snippet:
 
-```bash
-$ python svg.py -i path/to/seligdatfile.txt -o path/to/svg/files/nc2-1010-li -s -c 128.0 -u mm -t -f -p -m
+```python
+import wingwalker as ww
+
+# Arrays to hold coordinates
+xs, ys = []
+# File format
+dat_format="selig"
+# Chord (x-axis) length (in mm, in this case)
+c_len=128.0 
+# Input file
+infile='/path/to/selig/file'
+with open(infile, 'rb') as stream:
+        spec_name = ww.utils.parse_specs(stream, xs, ys, c_len, dat_format)
+        # spec_name, xs, and ys now have the info from the input file
+
 ```
-
-The resulting SVGs can be used as the basis for a 3D printed wing with the given airfoil.
 
 ## License
 

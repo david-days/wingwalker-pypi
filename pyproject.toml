@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wingwalker"
-version = "0.1.2"
+version = "0.1.3"
 description = "Wingwalker Airfoil and Wing Design Tools'"
 authors = ["David C. Days"]
 license = "MIT"

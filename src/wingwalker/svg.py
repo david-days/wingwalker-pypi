@@ -4,8 +4,8 @@ Functions to manipulate SVG files.
 
 import xml.etree.ElementTree as ET
 import argparse
-from output_templates import svg_template
-import utils
+from wingwalker.output_templates import svg_template
+import wingwalker.utils as utils
 
 X, Y = range(2)
 
