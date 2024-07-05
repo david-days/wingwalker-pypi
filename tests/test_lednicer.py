@@ -1,4 +1,5 @@
-import src.wingwalker.lednicer as lednicer
+import wingwalker.lednicer as lednicer
+
 
 def test_lednicer_parsing():
     parser = lednicer.Parser('lednicerdatfile.txt')

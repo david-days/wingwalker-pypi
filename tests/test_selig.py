@@ -1,4 +1,4 @@
-import src.wingwalker.selig as selig
+import wingwalker.selig as selig
 
 
 def test_selig_parsing():
