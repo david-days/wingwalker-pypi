@@ -118,6 +118,44 @@ def draw_airfoil_poly(svg_root: ET.Element, xs, ys, offset, l_width: float = 0.5
     return svg_root
 
 
+def main(infile: str, outbase: str, c_len, units: str='mm', lednicer=False, trace=True, fill=False, poly=False, mirror=False) -> None:
+    """
+    Main function for generating SVG file from airfoil specifications and requirements.
+    Args:
+        infile: Input file
+        outbase: Output file base name
+        c_len: chord length in units
+        units: chord length units.  default is 'mm'
+        lednicer: true if the input file is lednicer formatted; otherwise, false and selig-format is assumed
+        trace: create a trace SVG
+        fill: create a fill SVG
+        poly: create a poly SVG
+        mirror: create a mirror for any of the outputs requested
+    """
+    x = []
+    y = []
+    with open(infile, 'rb') as f:
+        dat_format = 'lednicer' if lednicer else 'selig'
+        spec_name = utils.parse_specs(f, x, y, c_len, dat_format)
+        print('Airfoil:  %s' % spec_name)
+        print('Format:  %s' % dat_format)
+        print('\tChord length:  %f %s' % (c_len, units))
+        print('\tTotal Coordinates:  %i' % len(x))
+        print('\tTrace:  %s' % str(trace))
+        print('\tFill:  %s' % str(fill))
+        print('\tPoly:  %s' % str(poly))
+        print('\tMirror:  %s' % str(mirror))
+        if trace or fill or poly:
+            svg_writer = SvgWriter(x, y, c_len, units)
+            base_file = outbase
+            if trace:
+                svg_writer.generate_trace(base_file + '_shape', mirror=mirror, filled=False, l_width=1.0)
+            if fill:
+                svg_writer.generate_trace(base_file + '_filled', mirror=mirror, filled=True, l_width=0.75)
+            if poly:
+                svg_writer.generate_poly(base_file + '_poly', mirror=mirror)
+
+
 class SvgWriter:
 
     x_coords: list[float] = []
@@ -181,7 +219,6 @@ class SvgWriter:
             mirror_tree = ET.ElementTree(mirror_root)
             mirror_tree.write(mirror_file, xml_declaration=True, encoding='utf-8')
 
-
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description='Parse airfoil spec and generate SVG files')
     arg_parser.add_argument('-i', '--input', dest='input', type=str,
@@ -206,25 +243,4 @@ if __name__ == '__main__':
                             help='Generate mirror images with each type', required=False)
     # parse arguments
     args = arg_parser.parse_args()
-    x = []
-    y = []
-    with open(args.input, 'rb') as f:
-        dat_format = 'lednicer' if args.lednicer else 'selig'
-        spec_name = utils.parse_specs(f, x, y, args.c_len, dat_format)
-        print('Airfoil:  %s' % spec_name)
-        print('Format:  %s' % dat_format)
-        print('\tChord length:  %f %s' % (args.c_len, args.units))
-        print('\tTotal Coordinates:  %i' % len(x))
-        print('\tTrace:  %s' % str(args.trace))
-        print('\t\tFill:  %s' % str(args.fill))
-        print('\tPoly:  %s' % str(args.poly))
-        print('\tMirror:  %s' % str(args.mirror))
-        if args.trace or args.fill or args.poly:
-            svg_writer = SvgWriter(x, y, args.c_len, args.units)
-            base_file = args.output
-            if args.trace:
-                svg_writer.generate_trace(base_file + '_shape', mirror=args.mirror, filled=False, l_width=1.0)
-            if args.fill:
-                svg_writer.generate_trace(base_file + '_filled', mirror=args.mirror, filled=True, l_width=0.75)
-            if args.poly:
-                svg_writer.generate_poly(base_file + '_poly', mirror=args.mirror)
+    main(args.input, args.output, args.c_len, args.units, args.lednicer, args.trace, args.fill, args.poly, args.mirror)
