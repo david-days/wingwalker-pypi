@@ -17,7 +17,8 @@ def clean_dir(path):
     files = glob.glob(f'{path}/*')
     for f in files:
         try:
-            os.remove(f)
+            if not os.path.isdir(f):
+                os.remove(f)
         except PermissionError:
             print(f"Permission denied: Unable to remove '{f}'.")
         except Exception as e:
@@ -26,7 +27,8 @@ def clean_dir(path):
     hfiles = glob.glob(f'{path}/.*')
     for hf in hfiles:
         try:
-            os.remove(hf)
+            if not os.path.isdir(hf):
+                os.remove(hf)
         except PermissionError:
             print(f"Permission denied: Unable to delete '{hf}'.")
         except Exception as e:
@@ -42,13 +44,14 @@ def dir_setup(out_dir: str):
     Returns:
         None
     """
-    path_array = os.path.split(out_dir)
+    path_array = out_dir.split(os.path.sep)
     idx = 0
     mkpath = path_array[idx]
-    while idx < len(path_array)-1:
+    while idx < len(path_array):
         print(f"\tChecking/creating output directory '{mkpath}'...")
         create_dir(mkpath)
         print(f"\tClearing out files in '{mkpath}', if they exists...")
         clean_dir(mkpath)
-        mkpath += f"{os.path.sep}{path_array[idx+1]}"
+        if idx < len(path_array)-1:
+            mkpath += f"{os.path.sep}{path_array[idx+1]}"
         idx += 1

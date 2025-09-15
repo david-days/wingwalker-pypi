@@ -41,7 +41,7 @@ def test_selig_svg(
 
     """
     dir_setup(write_dir)
-    selig_base = f'{write_dir}{os.path.sep}{base_file}'
+    selig_base = f'{write_dir}{os.path.sep}{base_file}_{do_trace}_{do_fill}_{do_poly}_{do_mirror}'
     chord = 256
     c_units = 'mm'
     ww.svg.main(
@@ -106,7 +106,7 @@ def test_lednicer_svg(
 
     """
     dir_setup(write_dir)
-    lednicer_base = f'{write_dir}{os.path.sep}{base_file}'
+    lednicer_base = f'{write_dir}{os.path.sep}{base_file}_{do_trace}_{do_fill}_{do_poly}_{do_mirror}'
     chord = 256
     c_units = 'mm'
     ww.svg.main(
