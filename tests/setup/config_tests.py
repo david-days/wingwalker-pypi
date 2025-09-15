@@ -32,13 +32,23 @@ def clean_dir(path):
         except Exception as e:
             print(f"An error occurred: {e}")
 
-@pytest.fixture(scope='session')
-def dir_setup():
-    # Create the output dir
-    output_dir = "out"
-    print(f"\tChecking/creating output directory '{output_dir}'...")
-    create_dir(output_dir)
-    print(f"\tClearing out files in '{output_dir}', if they exists...")
-    clean_dir(output_dir)
 
+def dir_setup(out_dir: str):
+    """
+    Create the directory structure for the given out path
+    Args:
+        out_dir: directory path to create (one or more directories and subdirectories)
 
+    Returns:
+        None
+    """
+    path_array = os.path.split(out_dir)
+    idx = 0
+    mkpath = path_array[idx]
+    while idx < len(path_array)-1:
+        print(f"\tChecking/creating output directory '{mkpath}'...")
+        create_dir(mkpath)
+        print(f"\tClearing out files in '{mkpath}', if they exists...")
+        clean_dir(mkpath)
+        mkpath += f"{os.path.sep}{path_array[idx+1]}"
+        idx += 1
