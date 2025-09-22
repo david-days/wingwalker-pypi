@@ -1,6 +1,7 @@
-"""
+f"""
 Functions to parse Lednicer-formatted airfoil specs
 """
+from io import TextIOWrapper
 
 import wingwalker.utils as utils
 import re
@@ -8,7 +9,7 @@ import wingwalker.base as base
 import argparse
 
 
-def parse_lednicer(stream, x_coords, y_coords, c_len) -> str:
+def parse_lednicer(stream: TextIOWrapper, x_coords: list[float], y_coords: list[float], c_len: float = 1.0) -> str:
     """
     Parse Selig-formated airfoil specifications
     Args:
@@ -74,7 +75,7 @@ class Parser(base.Reader):
         super().__init__(filename)
         self.filename = filename
 
-    def read(self, c_len):
+    def read(self, c_len = 1.0):
         with open(self.filename, 'rb') as file:
             xs = []
             ys = []
