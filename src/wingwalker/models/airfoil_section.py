@@ -1,7 +1,6 @@
 from collections.abc import Iterator
 
 from shapely.geometry import Point
-import shapely.ops
 
 class AirfoilSection:
     """
@@ -10,12 +9,6 @@ class AirfoilSection:
 
     Implements the iterator functions
     """
-    coords: list[Point]
-    chord: float
-    z_index: float
-    twist: float
-    spec_name: str
-
     def __init__(self, coords: list[Point], chord: float, z_index: float, twist: float, spec_name: str = "Undefined"):
         self.coords = coords
         self.chord = chord

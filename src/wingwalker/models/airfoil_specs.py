@@ -36,9 +36,9 @@ class AirfoilSpecs(object):
         Returns:
             yields shapely.geometry.Points in order
         """
-        mirrorVal = -1.0 if mirror else 1.0
+        mirror_val = -1.0 if mirror else 1.0
         for i in range(0, len(self.x)):
-            yield Point(self.x[i] * c_len, self.y[i] * c_len * mirrorVal, z)
+            yield Point(self.x[i] * c_len, self.y[i] * c_len * mirror_val, z)
 
     def to_line(self, c_len: float = 1.0, z: float = 0.0, mirror: bool = False)->LineString:
         """

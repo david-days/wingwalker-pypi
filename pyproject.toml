@@ -15,7 +15,9 @@ classifiers = [
 ]
 dependencies = [
     'pytest',
-    'shapely'
+    'shapely',
+    'numpy',
+    'pyvista'
 ]
 
 [project.urls]
@@ -25,6 +27,11 @@ Issues = "https://github.com/david-days/wingwalker-pypi"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "data/*.dat"
+]
 
 [tool.hatch.build.targets.wheel]
 packages = [
@@ -44,6 +51,7 @@ testpaths = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "svg: mark a test as targeting image generation and steps",
+    "threeD: mark a test as working with 3D modeling and wing generation",
     "io: mark a test as targeting file IO",
     "analytics: mark a test as testing data analytics",
     "testing: mark a test as targeting infrastructure (software, libraries, network connectivity, etc)"

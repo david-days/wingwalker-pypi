@@ -15,9 +15,8 @@ class WingType(IntFlag):
 class Planform(Enum):
     UNDEFINED = 0
     RECTANGULAR = 1
-    GEOMETRIC = 2
-    ELLIPSE = 3
-    TRAPEZOID = 4
+    ELLIPSE = 2
+    GEOMETRIC = 3
 
 class SpecFormat(Enum):
     UNDEFINED = 0
