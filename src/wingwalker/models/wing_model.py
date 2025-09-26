@@ -27,6 +27,11 @@ class WingModel:
     def mac(self)->float:
         return self.area / self.span if self.span != 0.0 else 0.0
 
+    @property
+    def aspect_ratio(self)->float:
+        span_2 = self.span ** 2.0
+        return span_2 / self.area if self.area != 0.0 else 0.0
+
 
     def __str__(self)->str:
         return f'Full Wing: {self.wing_type.name}, Planform: {self.planform.name}, {len(self.airfoil_sections)} sections'
@@ -41,6 +46,7 @@ class WingModel:
         r += f'End Cord: {self.end_chord}\n'
         r += f'Area: {self.area}\n'
         r += f'MAC: {self.mac}\n'
+        r += f'Aspect Ratio: {self.aspect_ratio}\n'
         r += f'Washout: {self.wing_params.twist}\n'
         r += f'Iterations: {self.wing_params.iterations}\n'
         r += '\n'

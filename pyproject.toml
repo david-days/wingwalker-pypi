@@ -49,6 +49,7 @@ testpaths = [
     "tests"
 ]
 markers = [
+    "display: marks tests that bring up a display window to be inspected",
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "svg: mark a test as targeting image generation and steps",
     "threeD: mark a test as working with 3D modeling and wing generation",

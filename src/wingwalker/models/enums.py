@@ -11,6 +11,11 @@ class WingType(IntFlag):
     ELEVATOR = STABILIZER | HORIZONTAL
     RUDDER = STABILIZER | VERTICAL
 
+    def __str__(self):
+        members = [member.name for member in self]
+        return ", ".join(members) if members else "Undefined"
+
+
 
 class Planform(Enum):
     UNDEFINED = 0

@@ -12,7 +12,7 @@ from wingwalker.models.airfoil_section import AirfoilSection
 from wingwalker.models.airfoil_specs import AirfoilSpecs
 from wingwalker.models.enums import Planform
 from wingwalker.io import specs
-from wingwalker.models.full_wing import WingModel
+from wingwalker.models.wing_model import WingModel
 
 
 def get_lambdas(build_params: WingRequest):
@@ -92,7 +92,7 @@ def generate_section(chord: float, twist: float, z: float, mirror: bool, af_spec
     tform = transform_matrix_z(twist, centroid)
     coords: list[Point] = []
     for p in af_specs.trace(chord, z, mirror):
-        vect = np.array([ p.x, p.y, p.z], dtype=float)
+        vect = np.array([ p.x, p.y, p.z, 1.0], dtype=float)
         vect_prime = tform @ vect
         coords.append(Point(vect_prime[0], vect_prime[1], vect_prime[2]))
 
@@ -134,7 +134,7 @@ def generate_wing(wing_params: WingRequest, af_specs: AirfoilSpecs, c_func, twis
     print(wing_model.__repr__())
     return wing_model
 
-def generate_mesh(model: WingModel)->PolyData:
+def generate_point_cloud(model: WingModel)->PolyData:
     """
     Generate a 3D mesh from the given wing model data
     Args:
@@ -158,6 +158,11 @@ def generate_mesh(model: WingModel)->PolyData:
     zarr = np.array(z_coords)
     wing_points = np.c_[xarr.reshape(-1), yarr.reshape(-1), zarr.reshape(-1)]
     wing_cloud = pv.PolyData(wing_points)
-    wing_mesh = wing_cloud.reconstruct_surface()
-    return wing_mesh
+    return wing_cloud
 
+def generate_surface_mesh(model: WingModel)->PolyData:
+    p_cloud: PolyData = generate_point_cloud(model)
+    surf_mesh = p_cloud.reconstruct_surface(nbr_sz=50)
+    smooth_mesh = surf_mesh.compute_normals()
+    clean_mesh = smooth_mesh.clean(point_merging=True)
+    return clean_mesh

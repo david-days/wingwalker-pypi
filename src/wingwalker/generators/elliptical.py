@@ -21,7 +21,7 @@ class EllipticalFunctor(ParamFunctor):
         Returns:
             lambda for chord(t) = t * math.cos(pi / (2.0 * (iterations - 1)))
         """
-        return lambda t: self.a_len * math.cos(t*self.alpha_chunk)
+        return lambda t: 2.0 * self.a_len * math.cos(t*self.alpha_chunk)
 
     def twist_func(self):
         """
