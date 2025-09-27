@@ -134,6 +134,25 @@ def generate_wing(wing_params: WingRequest, af_specs: AirfoilSpecs, c_func, twis
     print(wing_model.__repr__())
     return wing_model
 
+
+def generate_wing_model(wing_req)->WingModel:
+    """
+    Generate a wing model from the given request
+    Args:
+        wing_req:
+            WingRequest object representing the required specs
+    Returns:
+        a standard wing model
+    """
+    # load specs
+    af_specs = get_airfoil_specs(wing_req)
+    # Get lambdas
+    c_func, t_func, z_func, area_func = get_lambdas(wing_req)
+    # Generate the actual wing model
+    wing_model = generate_wing(wing_req, af_specs, c_func, t_func, z_func, area_func)
+    return wing_model
+
+
 def generate_point_cloud(model: WingModel)->PolyData:
     """
     Generate a 3D mesh from the given wing model data

@@ -138,7 +138,7 @@ def main(infile: str, outbase: str, c_len, units: str='mm', lednicer=False, trac
         dat_format = 'lednicer' if lednicer else 'selig'
         spec_name = utils.parse_specs(f, x, y, c_len, dat_format)
         print('Airfoil:  %s' % spec_name)
-        print('Format:  %s' % dat_format)
+        print('\tFormat:  %s' % dat_format)
         print('\tChord length:  %f %s' % (c_len, units))
         print('\tTotal Coordinates:  %i' % len(x))
         print('\tTrace:  %s' % str(trace))

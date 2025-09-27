@@ -17,7 +17,9 @@ dependencies = [
     'pytest',
     'shapely',
     'numpy',
-    'pyvista'
+    'pyvista',
+    'typer',
+    'typing-extensions'
 ]
 
 [project.urls]

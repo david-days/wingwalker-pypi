@@ -1,0 +1,5 @@
+# Don't add potential products of the example code
+**/*.[Ss][Vv][Gg]
+**/*.[Pp][Ll][Yy]
+**/*.[Vv][Kk][Tt]
+**/*.txt

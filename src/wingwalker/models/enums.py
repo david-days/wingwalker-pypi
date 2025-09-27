@@ -17,13 +17,13 @@ class WingType(IntFlag):
 
 
 
-class Planform(Enum):
-    UNDEFINED = 0
-    RECTANGULAR = 1
-    ELLIPSE = 2
-    GEOMETRIC = 3
+class Planform(str,Enum):
+    UNDEFINED = "undefined"
+    RECTANGULAR = "rectangular"
+    ELLIPSE = "ellipse"
+    GEOMETRIC = "geometric"
 
-class SpecFormat(Enum):
-    UNDEFINED = 0
-    SELIG = 1
-    LEDNICER = 2
+class SpecFormat(str, Enum):
+    UNDEFINED = "undefined"
+    SELIG = "selig"
+    LEDNICER = "lednicer"
