@@ -1,5 +1,3 @@
-from io import TextIOWrapper
-
 from wingwalker.base import Reader
 from wingwalker.lednicer import Parser as LednicerParser, parse_lednicer
 from wingwalker.models.airfoil_specs import AirfoilSpecs

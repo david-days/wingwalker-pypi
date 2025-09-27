@@ -2,7 +2,7 @@ import pytest
 
 from tests.utilities import call_gen_wing
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud
+from wingwalker.generators.wing import get_airfoil_specs
 from wingwalker.io.specs import parse_specfile
 from wingwalker.models.enums import SpecFormat, Planform, WingType
 from wingwalker.models.wing_model import WingModel
@@ -41,7 +41,7 @@ def test_elliptical_wing(
     wing_req.planform = Planform.ELLIPSE
     wing_req.wing_type = WingType.WING | WingType.RIGHT
     wing_req.span = 256.0
-    wing_req.base_cord = 100.0
+    wing_req.base_chord = 100.0
     wing_req.twist = -0.0349066
     wing_req.spec_file = spec_file
     wing_req.spec_format = spec_format

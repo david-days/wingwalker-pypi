@@ -34,8 +34,8 @@ class WingRequest(object):
         r += 'Dimensions\n'
         r += '----------------------------\n'
         r += f'Wing Span: {self.span}\n'
-        r += f'Base Cord: {self.base_chord}\n'
-        r += f'End Cord: {self.end_chord}\n'
+        r += f'Base Chord: {self.base_chord}\n'
+        r += f'End Chord: {self.end_chord}\n'
         r += f'Washout: {self.twist}\n'
         r += f'Iterations: {self.iterations}\n'
         r += '----------------------------\n'
@@ -44,4 +44,4 @@ class WingRequest(object):
 
     @property
     def mirrored(self)->bool:
-        return self.wing_type & WingType.LEFT == WingType.LEFT
+        return self.wing_type & WingType.RIGHT == WingType.RIGHT

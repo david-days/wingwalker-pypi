@@ -1,10 +1,8 @@
 import os
 
 import pytest
-from pyvista import PolyData
 
 from tests.utilities import get_standard_elliptical, get_standard_rectangular, get_standard_geometric
-from wingwalker.generators.wing import generate_point_cloud, generate_surface_mesh
 from wingwalker.io.exports import export_stl, export_vtk, export_ply
 from wingwalker.models.enums import WingType
 from wingwalker.models.wing_model import WingModel

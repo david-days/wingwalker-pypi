@@ -1,7 +1,5 @@
-from pyvista import PolyData
-
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud
+from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing
 from wingwalker.models.enums import WingType, Planform, SpecFormat
 from wingwalker.models.wing_model import WingModel
 
@@ -53,7 +51,7 @@ def get_standard_elliptical(wing_dir: WingType)->WingModel:
     wing_req.twist = -0.0349066
     wing_req.spec_file = 'data/lednicer_supercritical_nasa-sc2-1010.dat'
     wing_req.spec_format = SpecFormat.LEDNICER
-    wing_req.iterations = 250
+    wing_req.iterations = 100
 
     wing_model: WingModel = call_gen_wing(wing_req)
 
@@ -80,7 +78,7 @@ def get_standard_rectangular(wing_dir: WingType) -> WingModel:
     wing_req.twist = -0.0349066
     wing_req.spec_file = 'data/lednicer_supercritical_nasa-sc2-1010.dat'
     wing_req.spec_format = SpecFormat.LEDNICER
-    wing_req.iterations = 250
+    wing_req.iterations = 100
 
     wing_model: WingModel = call_gen_wing(wing_req)
 
@@ -106,7 +104,7 @@ def get_standard_geometric(wing_dir: WingType) -> WingModel:
     wing_req.twist = -0.0349066
     wing_req.spec_file = 'data/lednicer_supercritical_nasa-sc2-1010.dat'
     wing_req.spec_format = SpecFormat.LEDNICER
-    wing_req.iterations = 250
+    wing_req.iterations = 100
 
     wing_model: WingModel = call_gen_wing(wing_req)
 

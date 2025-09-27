@@ -7,13 +7,19 @@ from wingwalker.models.enums import WingType
 from wingwalker.models.wing_model import WingModel
 
 
-def plot_results(model: WingModel, points: PolyData, mesh: PolyData):
-    title = f'{model.wing_params.wing_type} - {model.wing_params.planform.name}'
-    pl = Plotter(shape=(1,2))
-    pl.add_title(title)
-    mesh_view = pl.add_mesh(mesh, color='yellow', line_width=0.5, show_edges=True)
-    pl.subplot(0,1)
-    point_view = pl.add_mesh(points, color='blue')
+def plot_results(model: WingModel, points: PolyData):
+    title = f'Point Cloud\n{model.wing_params.wing_type} - {model.wing_params.planform.name}'
+    pl = Plotter(shape=(1,1))
+    pl.add_title(title, color='grey')
+    pl.background_color='black'
+    point_view = pl.add_mesh(
+        mesh=points,
+        style='wireframe',
+        line_width=0.1,
+        point_size=1.5,
+        color='yellow',
+        opacity=0.7
+    )
     pl.show()
 
 @pytest.mark.display
@@ -37,7 +43,7 @@ def test_elliptical_plots(wing_side: WingType):
     assert surface_mesh is not None
     assert surface_mesh.n_points > 0
     assert surface_mesh.n_cells > 0
-    plot_results(model, p_cloud, surface_mesh)
+    plot_results(model, p_cloud)
 
 @pytest.mark.display
 @pytest.mark.parametrize('wing_side', [WingType.LEFT, WingType.RIGHT])
@@ -61,7 +67,7 @@ def test_rectangular_plots(wing_side: WingType):
     assert surface_mesh is not None
     assert surface_mesh.n_points > 0
     assert surface_mesh.n_cells > 0
-    plot_results(model, p_cloud, surface_mesh)
+    plot_results(model, p_cloud)
 
 @pytest.mark.display
 @pytest.mark.parametrize('wing_side', [WingType.LEFT, WingType.RIGHT])
@@ -84,4 +90,4 @@ def test_geometric_plots(wing_side: WingType):
     assert surface_mesh is not None
     assert surface_mesh.n_points > 0
     assert surface_mesh.n_cells > 0
-    plot_results(model, p_cloud, surface_mesh)
+    plot_results(model, p_cloud)

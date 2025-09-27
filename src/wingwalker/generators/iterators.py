@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.models.enums import WingType
 
 
 class ParamFunctor(ABC):
@@ -60,7 +59,9 @@ class ParamFunctor(ABC):
         return lambda: self.base_chord * self.length
 
 class TIterator:
-
+    """
+    Iterator for values of (t) as inputs for the lambda functions
+    """
     def __init__(self, build_params: WingRequest):
         self.iterations = build_params.iterations
 

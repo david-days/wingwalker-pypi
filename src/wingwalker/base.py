@@ -4,7 +4,7 @@ Base classes for wingwalker
 from abc import ABC, abstractmethod
 
 
-class Reader:
+class Reader(ABC):
     xs, ys = [], []
     chord_len = 0
     airfoil_desig = 'airfoil'

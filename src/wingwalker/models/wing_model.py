@@ -3,7 +3,6 @@ from typing import Iterator
 from wingwalker.build_params.wing_request import WingRequest
 from wingwalker.models.airfoil_section import AirfoilSection
 from wingwalker.models.airfoil_specs import AirfoilSpecs
-from wingwalker.models.enums import WingType, Planform
 
 
 class WingModel:
@@ -25,12 +24,23 @@ class WingModel:
 
     @property
     def mac(self)->float:
+        """
+        Calculated property for the mean aerodynamic chord, calculated in this case by wing area / span
+
+        Returns:
+            Calculated MAC
+        """
         return self.area / self.span if self.span != 0.0 else 0.0
 
     @property
     def aspect_ratio(self)->float:
+        """
+        Aspect ratio of the wing pairs for this design.  Calculated from (2 * span)^2/(2*area) = 2*span^2/area
+        Returns:
+            Full wing pair aspect ratio
+        """
         span_2 = self.span ** 2.0
-        return span_2 / self.area if self.area != 0.0 else 0.0
+        return (2.0 * span_2) / self.area if self.area != 0.0 else 0.0
 
 
     def __str__(self)->str:
@@ -42,11 +52,11 @@ class WingModel:
         r += f'Wing Type: {self.wing_params.wing_type}\n'
         r += f'Planform: {self.wing_params.planform}\n'
         r += f'Wing Span: {self.span}\n'
-        r += f'Base Cord: {self.base_chord}\n'
-        r += f'End Cord: {self.end_chord}\n'
+        r += f'Base Chord: {self.base_chord}\n'
+        r += f'End Chord: {self.end_chord}\n'
         r += f'Area: {self.area}\n'
         r += f'MAC: {self.mac}\n'
-        r += f'Aspect Ratio: {self.aspect_ratio}\n'
+        r += f'Full Aspect Ratio: {self.aspect_ratio}\n'
         r += f'Washout: {self.wing_params.twist}\n'
         r += f'Iterations: {self.wing_params.iterations}\n'
         r += '\n'
