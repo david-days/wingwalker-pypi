@@ -1,7 +1,7 @@
 import wingwalker as ww
 import pytest
 import os
-from tests.setup.config_tests import dir_setup
+from tests.setup.config_dirs import dir_setup
 
 def verify_exists(svg_path):
     assert os.path.exists(svg_path), f"{svg_path} does not exist"

@@ -4,7 +4,7 @@ Base classes for wingwalker
 from abc import ABC, abstractmethod
 
 
-class Reader:
+class Reader(ABC):
     xs, ys = [], []
     chord_len = 0
     airfoil_desig = 'airfoil'
@@ -13,7 +13,7 @@ class Reader:
         self.filename = filename
 
     @abstractmethod
-    def read(self, c_len: float) -> ([float], [float], str):
+    def read(self, c_len: float = 1.0) -> (list[float], list[float], str):
         """
         Method for reading wingwalker data
         Args:

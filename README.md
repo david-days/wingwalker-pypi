@@ -23,26 +23,9 @@ $ pip install wingwalker
 
 ## Usage
 
-The wingwalker modules can be used directly and help cut back on multiple custom steps.
-
-For example, to read in an airfoil data file, start with the follwoing code snippet:
-
-```python
-import wingwalker as ww
-
-# Arrays to hold coordinates
-xs, ys = []
-# File format
-dat_format="selig"
-# Chord (x-axis) length (in mm, in this case)
-c_len=128.0 
-# Input file
-infile='/path/to/selig/file'
-with open(infile, 'rb') as stream:
-        spec_name = ww.utils.parse_specs(stream, xs, ys, c_len, dat_format)
-        # spec_name, xs, and ys now have the info from the input file
-
-```
+Examples of performing various operations are included in the [examples](examples/README.md) directory.  Each example
+is a self-contained demonstration of that feature, from reading the input specification to generating the targe or displaying 
+the products.
 
 ## Contributing
 
