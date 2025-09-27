@@ -15,6 +15,11 @@ The goal behind this software is very straightforward:  To give everyone, from
 the basic hobbyist to the serious (semi)professional, the ability to go quickly from theory and
 specs to design to real- or virtual-world production of airfoils and wings.
 
+Wingwalker is modeled to make the process from airfoil selection to printable model as simple and straightforward
+as possible.  For most use cases, the simplest approach, demonstrated in the examples, should be sufficient.  Those with more
+strict or customized requirements still have access to the underlying steps, and can build up a more detailed workflow, in accordance
+with their needs.
+
 ## Installation
 
 ```bash
@@ -23,25 +28,52 @@ $ pip install wingwalker
 
 ## Usage
 
-The wingwalker modules can be used directly and help cut back on multiple custom steps.
-
-For example, to read in an airfoil data file, start with the follwoing code snippet:
+The following code snippet shows how to take various inputs, create a `WingRequest`, pass that to the module functions,
+and then display and export the resulting wing point cloud.
 
 ```python
-import wingwalker as ww
+from pyvista import PolyData, Plotter
+from wingwalker.models.wing_model import WingModel, WingRequest
+from wingwalker.generators.wing import generate_wing_model, generate_point_cloud
+from wingwalker.io.exports import export_ply
 
-# Arrays to hold coordinates
-xs, ys = []
-# File format
-dat_format="selig"
-# Chord (x-axis) length (in mm, in this case)
-c_len=128.0 
-# Input file
-infile='/path/to/selig/file'
-with open(infile, 'rb') as stream:
-        spec_name = ww.utils.parse_specs(stream, xs, ys, c_len, dat_format)
-        # spec_name, xs, and ys now have the info from the input file
+def plot_results(model: WingModel, points: PolyData):
+    title = f'Point Cloud\n\n{model.wing_params.wing_type}\n{model.wing_params.planform.name}'
+    pl = Plotter(shape=(1,1))
+    pl.add_title(title, color='grey')
+    pl.background_color='black'
+    point_view = pl.add_mesh(
+        mesh=points,
+        style='points',
+        line_width=0.1,
+        point_size=1.5,
+        color='yellow',
+        opacity=0.7
+    )
+    pl.show()
 
+def main(planform, wing_type, span, base, end, twist, specfile, spec_format, iterations):    
+    req: WingRequest = WingRequest()
+    req.planform = planform
+    req.wing_type = wing_type
+    req.span = span
+    req.base_chord = base
+    req.end_chord = end
+    req.twist = twist
+    req.spec_file = specfile
+    req.spec_format = spec_format
+    req.iterations = iterations
+
+    print()
+
+    # Generate and preview a point cloud for the model
+    model = generate_wing_model(wing_req=req)
+    p_cloud: PolyData = generate_point_cloud(model)
+    plot_results(model, p_cloud)
+
+    #Export the model to PLY format
+    export_name = f'wing_{wing_type}_{planform}.ply'
+    export_ply(model, export_name)
 ```
 
 ## License
