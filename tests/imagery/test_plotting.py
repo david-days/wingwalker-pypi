@@ -23,6 +23,7 @@ def plot_results(model: WingModel, points: PolyData):
     pl.show()
 
 @pytest.mark.display
+@pytest.mark.user_action
 @pytest.mark.parametrize('wing_side', [WingType.LEFT, WingType.RIGHT])
 def test_elliptical_plots(wing_side: WingType):
     """
@@ -46,6 +47,7 @@ def test_elliptical_plots(wing_side: WingType):
     plot_results(model, p_cloud)
 
 @pytest.mark.display
+@pytest.mark.user_action
 @pytest.mark.parametrize('wing_side', [WingType.LEFT, WingType.RIGHT])
 def test_rectangular_plots(wing_side: WingType):
     """
@@ -70,6 +72,7 @@ def test_rectangular_plots(wing_side: WingType):
     plot_results(model, p_cloud)
 
 @pytest.mark.display
+@pytest.mark.user_action
 @pytest.mark.parametrize('wing_side', [WingType.LEFT, WingType.RIGHT])
 def test_geometric_plots(wing_side: WingType):
     """

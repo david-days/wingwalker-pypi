@@ -28,15 +28,13 @@ Issues = "https://github.com/david-days/wingwalker-pypi"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build]
-include = [
-  "data/*.dat"
-]
-
 [tool.hatch.build.targets.wheel]
 packages = [
     "src/wingwalker"
 ]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data/" = "wingwalker/data"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -50,6 +48,7 @@ testpaths = [
 ]
 markers = [
     "display: marks tests that bring up a display window to be inspected",
+    "user_action: marks tests that require a user response to complete",
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "svg: mark a test as targeting image generation and steps",
     "threeD: mark a test as working with 3D modeling and wing generation",
