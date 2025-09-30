@@ -1,3 +1,5 @@
+import json
+
 from wingwalker.models.enums import WingType, Planform, SpecFormat
 
 
@@ -45,3 +47,44 @@ class WingRequest(object):
     @property
     def mirrored(self)->bool:
         return self.wing_type & WingType.RIGHT == WingType.RIGHT
+
+    def __eq__(self, other)->bool:
+        if not isinstance(other, WingRequest):
+            raise NotImplementedError
+        self_array = (
+            self.name,
+            self.wing_type,
+            self.planform,
+            self.spec_file,
+            self.spec_format,
+            self.base_chord,
+            self.end_chord,
+            self.span,
+            self.twist,
+            self.iterations,
+            self.area
+        )
+        other_array = (
+            other.name,
+            other.wing_type,
+            other.planform,
+            other.spec_file,
+            other.spec_format,
+            other.base_chord,
+            other.end_chord,
+            other.span,
+            other.twist,
+            other.iterations,
+            other.area
+        )
+        return self_array == other_array
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    @classmethod
+    def from_json(cls, json_str):
+        req_dict: dict = json.loads(json_str)
+        req: WingRequest = WingRequest()
+        req.__dict__ = req_dict
+        return req

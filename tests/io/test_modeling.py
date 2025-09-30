@@ -1,4 +1,10 @@
+import json
+from datetime import datetime
+
 import pytest
+import os
+
+from numpy import long
 
 from tests.utilities import call_gen_wing
 from wingwalker.build_params.wing_request import WingRequest
@@ -7,6 +13,17 @@ from wingwalker.io.specs import parse_specfile
 from wingwalker.models.enums import SpecFormat, Planform, WingType
 from wingwalker.models.wing_model import WingModel
 
+persist_dir = "out/io/persist"
+
+try:
+    os.makedirs(persist_dir)
+except FileExistsError as fex:
+    print(f'Directories {persist_dir} already exists')
+
+
+def ticks():
+    dt = datetime.now()
+    return long((dt - datetime(1, 1, 1)).total_seconds() * 10000000)
 
 @pytest.mark.io
 @pytest.mark.parametrize('spec_file,spec_format', [
@@ -259,3 +276,73 @@ def test_geometric_permutations(
 
     assert wing_model is not None, 'Wing model failed to generate'
 
+@pytest.mark.io
+@pytest.mark.disk
+@pytest.mark.parametrize('planform', [Planform.RECTANGULAR, Planform.ELLIPSE, Planform.GEOMETRIC])
+@pytest.mark.parametrize('side', [WingType.LEFT, WingType.RIGHT])
+@pytest.mark.parametrize('wing_type', [WingType.WING, WingType.RUDDER, WingType.ELEVATOR])
+@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
+@pytest.mark.parametrize('span', [256.0, 512.0])
+@pytest.mark.parametrize('base', [128.0, 100])
+@pytest.mark.parametrize('end', [0, 10, 50, 100])
+@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('spec_file,spec_format', [
+    ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
+    ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),
+])
+def test_wing_request_io(
+        spec_file: str,
+        spec_format: SpecFormat,
+        planform: Planform,
+        side: WingType,
+        wing_type: WingType,
+        twist: float,
+        span: float,
+        base: float,
+        end: float,
+        iterations: int
+    ):
+    """
+    Test the full process of elliptical wing generation, from specs to 3D STL and screenshot files
+    Args:
+        spec_file: input file,
+        spec_format: airfoil format,
+        planform: shape of wing,
+        side: left or right structure,
+        wing_type: wing, rudder, or elevator,
+        twist: aerodynamic twist,
+        span: length of wing,
+        base: base chord length,
+        end: end chord length,
+        iterations: number of iterations between base and end
+
+    """
+    # Set up request
+    wing_req: WingRequest = WingRequest()
+    wing_req.planform = planform
+    wing_req.wing_type = side | wing_type
+    wing_req.span = span
+    wing_req.base_chord = base
+    wing_req.end_chord = end
+    wing_req.twist = twist
+    wing_req.spec_file = spec_file
+    wing_req.spec_format = spec_format
+    wing_req.iterations = iterations
+
+    curr_ticks = ticks()
+    outfile = f'{persist_dir}/{ticks()}.json'
+
+    with open(outfile, 'w', encoding='utf-8') as fout:
+        fout.write(wing_req.to_json())
+
+    stored_req: WingRequest
+    with open(outfile, 'r', encoding='utf-8') as fin:
+        json_str = fin.read()
+        stored_req = WingRequest.from_json(json_str)
+
+    assert wing_req is not None, 'Wing request was null'
+    assert stored_req is not None, 'Stored request failed to reload'
+
+    assert wing_req == stored_req, 'Stored wing request is not the same as the original request'
+    # cleanup
+    os.remove(outfile)

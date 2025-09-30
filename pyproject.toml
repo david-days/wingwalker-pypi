@@ -14,7 +14,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    'pytest',
     'shapely',
     'numpy',
     'pyvista',
@@ -55,6 +54,7 @@ markers = [
     "svg: mark a test as targeting image generation and steps",
     "threeD: mark a test as working with 3D modeling and wing generation",
     "io: mark a test as targeting file IO",
+    "disk: mark a test as persisting project data to the disk",
     "analytics: mark a test as testing data analytics",
     "testing: mark a test as targeting infrastructure (software, libraries, network connectivity, etc)"
 ]
