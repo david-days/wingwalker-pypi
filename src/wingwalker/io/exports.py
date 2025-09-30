@@ -23,34 +23,11 @@ def export_stl(wing_model: WingModel, stl_filename: str) -> None:
         stl_filename += '.stl'
 
     mesh_set: pymeshlab.MeshSet = generate_closed_mesh(model=wing_model)
-    mesh_set.save_current_mesh(file_name=stl_filename, overwrite=True)
+    mesh_set.save_current_mesh(file_name=stl_filename)
     stats = os.stat(stl_filename)
     print(f'Wing model processed and saved to {stl_filename}')
     print(stats)
 
-def export_vtk(wing_model: WingModel, vtk_filename: str) -> None:
-    """
-    Given a wing model, got through the process to generate a VTP point cloud file
-    Args:
-        wing_model: model to be exported
-        vtk_filename: path and file name for the VTP file
-
-    Returns:
-        None
-    """
-    print(f'Exporting wing model to {vtk_filename}')
-    print(wing_model.__repr__())
-
-    if not vtk_filename.endswith('.vtk'):
-        vtk_filename += '.vtk'
-
-    point_cloud = generate_point_cloud_polydata(wing_model)
-    point_cloud.save(filename=vtk_filename, binary=True)
-
-    stats = os.stat(vtk_filename)
-    print(f'Wing model saved to {vtk_filename}')
-    print(stats)
-    print()
 
 def export_ply(wing_model: WingModel, ply_filename: str) -> None:
     """

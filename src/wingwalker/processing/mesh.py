@@ -34,5 +34,32 @@ def generate_closed_mesh(model: WingModel)->pymeshlab.MeshSet:
     model_mesh = transform_to_pml_mesh(model)
     mesh_set.add_mesh(model_mesh, model.identifier)
     mesh_set.compute_normal_for_point_clouds(k=10)
-    mesh_set.meshing_close_holes(maxholesize=300)
+    mesh_set.generate_surface_reconstruction_ball_pivoting()
+
+    # Chant the invocation no more than 4 times...
+    nm_counts = get_non_manifold_counts(mesh_set)
+    clean_count: int = 0
+    while clean_count < 4 and (nm_counts[0] > 0 or nm_counts[1] > 0 or nm_counts[2] > 0):
+        print(f'\tnon-manifold: vertices={nm_counts[0]}, edges={nm_counts[1]}, holes={nm_counts[2]}')
+        if nm_counts[1] > 0:
+            mesh_set.meshing_repair_non_manifold_edges(method=1)
+        if nm_counts[0] > 0:
+            mesh_set.meshing_repair_non_manifold_vertices(vertdispratio=0.0)
+        mesh_set.meshing_close_holes(maxholesize=300)
+        clean_count += 1
+        nm_counts = get_non_manifold_counts(mesh_set)
+
+    print(f'Final non-manifold: vertices={nm_counts[0]}, edges={nm_counts[1]}, holes={nm_counts[2]}, cycles={clean_count}')
     return mesh_set
+
+def get_non_manifold_counts(mesh_set: pymeshlab.MeshSet):
+    mesh_set.compute_selection_by_non_manifold_per_vertex()
+    nm_vert_count = mesh_set.current_mesh().selected_vertex_number()
+
+    mesh_set.compute_selection_by_non_manifold_edges_per_face()
+    nm_edge_count = mesh_set.current_mesh().selected_face_number()
+
+    topo_stats = mesh_set.get_topological_measures()
+
+    return nm_vert_count, nm_edge_count, topo_stats['number_holes']
+
