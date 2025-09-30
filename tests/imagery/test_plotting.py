@@ -2,7 +2,7 @@ import pytest
 from pyvista import PolyData, Plotter
 
 from tests.utilities import get_standard_elliptical, get_standard_rectangular, get_standard_geometric
-from wingwalker.generators.wing import generate_point_cloud
+from wingwalker.generators.wing import generate_point_cloud_polydata
 from wingwalker.models.enums import WingType
 from wingwalker.models.wing_model import WingModel
 
@@ -36,7 +36,7 @@ def test_elliptical_plots(wing_side: WingType):
     """
     model: WingModel = get_standard_elliptical(wing_side)
     assert model is not None
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     assert p_cloud is not None
     assert p_cloud.n_points > 0
     # Try to generate a surface mesh
@@ -60,7 +60,7 @@ def test_rectangular_plots(wing_side: WingType):
     """
     model: WingModel = get_standard_rectangular(wing_side)
     assert model is not None
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     assert p_cloud is not None
     assert p_cloud.n_points > 0
     assert p_cloud is not None
@@ -85,7 +85,7 @@ def test_geometric_plots(wing_side: WingType):
     """
     model: WingModel = get_standard_geometric(wing_side)
     assert model is not None
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     assert p_cloud is not None
     assert p_cloud.n_points > 0
     # Try to generate a surface mesh

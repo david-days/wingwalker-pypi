@@ -1,4 +1,5 @@
 import json
+import string
 
 from wingwalker.models.enums import WingType, Planform, SpecFormat
 
@@ -47,6 +48,12 @@ class WingRequest(object):
     @property
     def mirrored(self)->bool:
         return self.wing_type & WingType.RIGHT == WingType.RIGHT
+
+    @property
+    def identifier(self)->str:
+        name_str = self.name if self.name != '' else 'unk'
+        type_str = self.wing_type.__str__().replace(',', '_')
+        return f'{name_str}_{self.planform}_{type_str}'
 
     def __eq__(self, other)->bool:
         if not isinstance(other, WingRequest):

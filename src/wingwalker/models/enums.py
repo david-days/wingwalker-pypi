@@ -13,7 +13,7 @@ class WingType(IntFlag):
 
     def __str__(self):
         members = [member.name for member in self]
-        return ", ".join(members) if members else "Undefined"
+        return ",".join(members) if members else "Undefined"
 
 
 

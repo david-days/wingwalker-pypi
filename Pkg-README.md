@@ -34,14 +34,15 @@ and then display and export the resulting wing point cloud.
 ```python
 from pyvista import PolyData, Plotter
 from wingwalker.models.wing_model import WingModel, WingRequest
-from wingwalker.generators.wing import generate_wing_model, generate_point_cloud
+from wingwalker.generators.wing import generate_wing_model, generate_point_cloud_polydata
 from wingwalker.io.exports import export_ply
+
 
 def plot_results(model: WingModel, points: PolyData):
     title = f'Point Cloud\n\n{model.wing_params.wing_type}\n{model.wing_params.planform.name}'
-    pl = Plotter(shape=(1,1))
+    pl = Plotter(shape=(1, 1))
     pl.add_title(title, color='grey')
-    pl.background_color='black'
+    pl.background_color = 'black'
     point_view = pl.add_mesh(
         mesh=points,
         style='points',
@@ -52,7 +53,8 @@ def plot_results(model: WingModel, points: PolyData):
     )
     pl.show()
 
-def main(planform, wing_type, span, base, end, twist, specfile, spec_format, iterations):    
+
+def main(planform, wing_type, span, base, end, twist, specfile, spec_format, iterations):
     req: WingRequest = WingRequest()
     req.planform = planform
     req.wing_type = wing_type
@@ -68,10 +70,10 @@ def main(planform, wing_type, span, base, end, twist, specfile, spec_format, ite
 
     # Generate and preview a point cloud for the model
     model = generate_wing_model(wing_req=req)
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     plot_results(model, p_cloud)
 
-    #Export the model to PLY format
+    # Export the model to PLY format
     export_name = f'wing_{wing_type}_{planform}.ply'
     export_ply(model, export_name)
 ```

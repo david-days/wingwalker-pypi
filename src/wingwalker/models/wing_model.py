@@ -42,6 +42,9 @@ class WingModel:
         span_2 = self.span ** 2.0
         return (2.0 * span_2) / self.area if self.area != 0.0 else 0.0
 
+    @property
+    def identifier(self)->str:
+        return f'wing_model_{self.wing_params.identifier}_{len(self.airfoil_sections)}'
 
     def __str__(self)->str:
         return f'Full Wing: {self.wing_type.name}, Planform: {self.planform.name}, {len(self.airfoil_sections)} sections'

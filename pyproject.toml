@@ -18,7 +18,8 @@ dependencies = [
     'numpy',
     'pyvista',
     'typer',
-    'typing-extensions'
+    'typing-extensions',
+    'pymeshlab'
 ]
 
 [project.urls]

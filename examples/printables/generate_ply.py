@@ -5,7 +5,7 @@ from pyvista import PolyData, Plotter
 from typing_extensions import Annotated
 
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud, \
+from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud_polydata, \
     generate_wing_model
 from wingwalker.io.exports import export_ply
 from wingwalker.models.enums import SpecFormat, Planform, WingType

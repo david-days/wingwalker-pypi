@@ -1,12 +1,14 @@
 import os
+import pymeshlab
 
-from wingwalker.generators.wing import generate_surface_mesh, generate_point_cloud
+from wingwalker.generators.wing import generate_point_cloud_polydata, generate_point_cloud_array
 from wingwalker.models.wing_model import WingModel
+from wingwalker.processing.mesh import generate_closed_mesh
 
 
 def export_stl(wing_model: WingModel, stl_filename: str) -> None:
     """
-    Given a wing model, go through the process to generate and export a surface mesh as an STL
+    Given a wing model, go through the process to generate and export a closed mesh as an STL
     Args:
         wing_model: Model data to be exported
         stl_filename: file name to save the stl_file
@@ -20,11 +22,10 @@ def export_stl(wing_model: WingModel, stl_filename: str) -> None:
     if not stl_filename.endswith('.stl'):
         stl_filename += '.stl'
 
-    surface_mesh = generate_surface_mesh(wing_model)
-    surface_mesh.save(filename=stl_filename, binary=True)
-
+    mesh_set: pymeshlab.MeshSet = generate_closed_mesh(model=wing_model)
+    mesh_set.save_current_mesh(file_name=stl_filename, overwrite=True)
     stats = os.stat(stl_filename)
-    print(f'Wing model saved to {stl_filename}')
+    print(f'Wing model processed and saved to {stl_filename}')
     print(stats)
 
 def export_vtk(wing_model: WingModel, vtk_filename: str) -> None:
@@ -43,7 +44,7 @@ def export_vtk(wing_model: WingModel, vtk_filename: str) -> None:
     if not vtk_filename.endswith('.vtk'):
         vtk_filename += '.vtk'
 
-    point_cloud = generate_point_cloud(wing_model)
+    point_cloud = generate_point_cloud_polydata(wing_model)
     point_cloud.save(filename=vtk_filename, binary=True)
 
     stats = os.stat(vtk_filename)
@@ -67,7 +68,7 @@ def export_ply(wing_model: WingModel, ply_filename: str) -> None:
     if not ply_filename.endswith('.ply'):
         ply_filename += '.ply'
 
-    point_cloud = generate_point_cloud(wing_model)
+    point_cloud = generate_point_cloud_polydata(wing_model)
     point_cloud.save(filename=ply_filename, binary=True)
 
     stats = os.stat(ply_filename)
