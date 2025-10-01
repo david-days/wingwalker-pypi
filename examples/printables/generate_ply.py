@@ -1,7 +1,6 @@
 from enum import Enum
 
 import typer
-from pyvista import PolyData, Plotter
 from typing_extensions import Annotated
 
 from wingwalker.build_params.wing_request import WingRequest

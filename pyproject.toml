@@ -1,6 +1,6 @@
 [project]
 name = "wingwalker"
-version = "0.9.0"
+version = "1.0.0"
 description = "Wingwalker Airfoil and Wing Design Tools'"
 authors = [
   { name="David Days", email="david.c.days@gmail.com" },

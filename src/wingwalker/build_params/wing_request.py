@@ -87,11 +87,21 @@ class WingRequest(object):
         return self_array == other_array
 
     def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        out_dict = dict(self.__dict__)
+        w_type: str = ''
+        out_dict['wing_type'] = self.wing_type.__str__()
+        return json.dumps(out_dict, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     @classmethod
     def from_json(cls, json_str):
         req_dict: dict = json.loads(json_str)
+        wtype_val: WingType = WingType.UNDEFINED
+        if req_dict['wing_type'] is not None:
+            for t in req_dict['wing_type'].split(','):
+                for m in WingType.__members__:
+                    if m.__eq__(t):
+                        wtype_val = wtype_val | WingType.__members__[t]
+        req_dict['wing_type'] = wtype_val
         req: WingRequest = WingRequest()
         req.__dict__ = req_dict
         return req
