@@ -1,0 +1,14 @@
+{
+    "area": 0.0,
+    "base_chord": 64.0,
+    "end_chord": 0.0,
+    "iterations": 300,
+    "name": "stl_demo_prototype",
+    "notes": "\n- This is an example of multiline notes\n- These can be stored in the config and retrieved later \n",
+    "planform": "ellipse",
+    "span": 256.0,
+    "spec_file": "../../data/selig_supercritical_nasa-sc2-1010.dat",
+    "spec_format": "selig",
+    "twist": -0.04,
+    "wing_type": "WING,LEFT"
+}

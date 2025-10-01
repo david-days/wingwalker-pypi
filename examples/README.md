@@ -61,9 +61,22 @@ At this point a PyVista popup window will appear, showing the point cloud that w
 
 ![Point cloud display](.screenshots/point_cloud_preview.png "Popup Display")
 
+### Diretory `examples/io`
+
+This directory has examples for storing and retrieving files from the disk, such as reading externally-generated wing reqeusts.
+
+#### `persist_wing_request.py`
+
+This simple script configures a wing request and then writes it out to a local file in the same directory.
+
 ### Directory `examples/printables`
 
 These examples show how to create a wing model from specs and create various products to be used for 3D printing.
+
+#### `gen_stl_script.py`
+
+This is a very simple script that takes the provided JSON file `geometric_left_wing_256mm.json`, loads it into a wing request,
+and then  generates an STL file ready for post processing or sending a 3D printer.
 
 #### `generate_ply.py`
 

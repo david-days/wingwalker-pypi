@@ -1,3 +1,12 @@
+"""
+Module wingwalker is an airfoil designed library, providing tools and processes to ease creating custom airfoils (wings,
+stabilizers, and control surfaces)
+
+__version__ = '0.9.0'
+__author__ = 'David Days'
+__email__ = 'david.c.days@gmail.com'
+"""
+
 from wingwalker.selig import (
     parse_selig,
     Parser as SeligParser

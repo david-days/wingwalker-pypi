@@ -1,3 +1,6 @@
+import json
+import string
+
 from wingwalker.models.enums import WingType, Planform, SpecFormat
 
 
@@ -45,3 +48,60 @@ class WingRequest(object):
     @property
     def mirrored(self)->bool:
         return self.wing_type & WingType.RIGHT == WingType.RIGHT
+
+    @property
+    def identifier(self)->str:
+        name_str = self.name if self.name != '' else 'unk'
+        type_str = self.wing_type.__str__().replace(',', '_')
+        return f'{name_str}_{self.planform}_{type_str}'
+
+    def __eq__(self, other)->bool:
+        if not isinstance(other, WingRequest):
+            raise NotImplementedError
+        self_array = (
+            self.name,
+            self.wing_type,
+            self.planform,
+            self.spec_file,
+            self.spec_format,
+            self.base_chord,
+            self.end_chord,
+            self.span,
+            self.twist,
+            self.iterations,
+            self.area
+        )
+        other_array = (
+            other.name,
+            other.wing_type,
+            other.planform,
+            other.spec_file,
+            other.spec_format,
+            other.base_chord,
+            other.end_chord,
+            other.span,
+            other.twist,
+            other.iterations,
+            other.area
+        )
+        return self_array == other_array
+
+    def to_json(self):
+        out_dict = dict(self.__dict__)
+        w_type: str = ''
+        out_dict['wing_type'] = self.wing_type.__str__()
+        return json.dumps(out_dict, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    @classmethod
+    def from_json(cls, json_str):
+        req_dict: dict = json.loads(json_str)
+        wtype_val: WingType = WingType.UNDEFINED
+        if req_dict['wing_type'] is not None:
+            for t in req_dict['wing_type'].split(','):
+                for m in WingType.__members__:
+                    if m.__eq__(t):
+                        wtype_val = wtype_val | WingType.__members__[t]
+        req_dict['wing_type'] = wtype_val
+        req: WingRequest = WingRequest()
+        req.__dict__ = req_dict
+        return req

@@ -51,7 +51,7 @@ def get_standard_elliptical(wing_dir: WingType)->WingModel:
     wing_req.twist = -0.0349066
     wing_req.spec_file = 'data/lednicer_supercritical_nasa-sc2-1010.dat'
     wing_req.spec_format = SpecFormat.LEDNICER
-    wing_req.iterations = 100
+    wing_req.iterations = 300
 
     wing_model: WingModel = call_gen_wing(wing_req)
 

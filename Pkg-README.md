@@ -34,14 +34,15 @@ and then display and export the resulting wing point cloud.
 ```python
 from pyvista import PolyData, Plotter
 from wingwalker.models.wing_model import WingModel, WingRequest
-from wingwalker.generators.wing import generate_wing_model, generate_point_cloud
+from wingwalker.generators.wing import generate_wing_model, generate_point_cloud_polydata
 from wingwalker.io.exports import export_ply
+
 
 def plot_results(model: WingModel, points: PolyData):
     title = f'Point Cloud\n\n{model.wing_params.wing_type}\n{model.wing_params.planform.name}'
-    pl = Plotter(shape=(1,1))
+    pl = Plotter(shape=(1, 1))
     pl.add_title(title, color='grey')
-    pl.background_color='black'
+    pl.background_color = 'black'
     point_view = pl.add_mesh(
         mesh=points,
         style='points',
@@ -52,7 +53,8 @@ def plot_results(model: WingModel, points: PolyData):
     )
     pl.show()
 
-def main(planform, wing_type, span, base, end, twist, specfile, spec_format, iterations):    
+
+def main(planform, wing_type, span, base, end, twist, specfile, spec_format, iterations):
     req: WingRequest = WingRequest()
     req.planform = planform
     req.wing_type = wing_type
@@ -68,13 +70,57 @@ def main(planform, wing_type, span, base, end, twist, specfile, spec_format, ite
 
     # Generate and preview a point cloud for the model
     model = generate_wing_model(wing_req=req)
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     plot_results(model, p_cloud)
 
-    #Export the model to PLY format
+    # Export the model to PLY format
     export_name = f'wing_{wing_type}_{planform}.ply'
     export_ply(model, export_name)
 ```
+
+## Generating STL files
+
+The process too generate an STL file for processing or sending to a 3D printer is very simple. This script shows the entire process.
+
+The requirements for the wing STL file are stored in `elliptical_left_wing_256mm.json`.  This python script
+parses the request, parses the designated airfoil specs, and then steps through the process to generate an elliptical wing
+of the given dimensions.
+
+```python
+import os
+
+from wingwalker.build_params.wing_request import WingRequest
+from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing
+from wingwalker.io.exports import export_stl
+
+config_file = 'elliptical_left_wing_256mm.json'
+
+# Read the values from the file
+wing_req: WingRequest
+with open(config_file, 'r', encoding='utf-8') as fin:
+    json_str = fin.read()
+    wing_req = WingRequest.from_json(json_str)
+
+# Retrieve the specs from the request path
+af_specs = get_airfoil_specs(wing_req)
+
+# Get lambdas (dimension functions for the given parameters)
+c_func, t_func, z_func, area_func = get_lambdas(wing_req)
+
+# Generate the actual wing model
+model = generate_wing(wing_req, af_specs, c_func, t_func, z_func, area_func)
+
+f_name = f'{wing_req.name}_geometric_wing.stl'
+if os.path.exists(f_name):
+    os.remove(f_name)
+
+export_stl(model, f_name)
+
+print('Aircraft wing STL file generated.')
+
+print(model.__repr__())
+```
+
 
 ## License
 

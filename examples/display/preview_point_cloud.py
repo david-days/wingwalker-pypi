@@ -5,7 +5,7 @@ from pyvista import PolyData, Plotter
 from typing_extensions import Annotated
 
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud, \
+from wingwalker.generators.wing import get_airfoil_specs, get_lambdas, generate_wing, generate_point_cloud_polydata, \
     generate_wing_model
 from wingwalker.models.enums import SpecFormat, Planform, WingType
 from wingwalker.models.wing_model import WingModel
@@ -146,7 +146,7 @@ def main(
     print()
 
     model = generate_wing_model(wing_req=req)
-    p_cloud: PolyData = generate_point_cloud(model)
+    p_cloud: PolyData = generate_point_cloud_polydata(model)
     plot_results(model, p_cloud)
 
 if __name__ == "__main__":

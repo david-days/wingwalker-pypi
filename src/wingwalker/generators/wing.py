@@ -153,14 +153,14 @@ def generate_wing_model(wing_req)->WingModel:
     return wing_model
 
 
-def generate_point_cloud(model: WingModel)->PolyData:
+def generate_point_cloud_array(model: WingModel)->np.ndarray:
     """
-    Generate a 3D mesh from the given wing model data
+    Generate a numpy array holding the vertices from the given wing model data
     Args:
         model: Wing model to be converted to a mesh
 
     Returns:
-        PyVista PolyData instance containing the 3D mesh
+        Numpy array holding the vertices from the given wing model
     """
     # Compile point values
     x_coords = []
@@ -176,12 +176,17 @@ def generate_point_cloud(model: WingModel)->PolyData:
     yarr = np.array(y_coords)
     zarr = np.array(z_coords)
     wing_points = np.c_[xarr.reshape(-1), yarr.reshape(-1), zarr.reshape(-1)]
+    return wing_points
+
+def generate_point_cloud_polydata(model: WingModel)->PolyData:
+    """
+    Generate a 3D mesh from the given wing model data
+    Args:
+        model: Wing model to be converted to a mesh
+
+    Returns:
+        PyVista PolyData instance containing the 3D mesh
+    """
+    wing_points = generate_point_cloud_array(model)
     wing_cloud = pv.PolyData(wing_points)
     return wing_cloud
-
-def generate_surface_mesh(model: WingModel)->PolyData:
-    p_cloud: PolyData = generate_point_cloud(model)
-    surf_mesh = p_cloud.reconstruct_surface(nbr_sz=50)
-    smooth_mesh = surf_mesh.compute_normals()
-    clean_mesh = smooth_mesh.clean(point_merging=True)
-    return clean_mesh
