@@ -21,6 +21,7 @@ class WingRequest(object):
         self.twist: float = 0.0
         self.iterations: int = 10
         self.area: float = 0.0
+        self.sections: list[float] = []
 
     def __str__(self)->str:
         return f'{self.name}, {self.wing_type.name}, {self.planform}'
@@ -41,6 +42,7 @@ class WingRequest(object):
         r += f'End Chord: {self.end_chord}\n'
         r += f'Washout: {self.twist}\n'
         r += f'Iterations: {self.iterations}\n'
+        r += f'Sections: { self.sections}\n' if len(self.sections) > 0 else '\n'
         r += '----------------------------\n'
         r += f'Notes: {self.notes}\n'
         return r

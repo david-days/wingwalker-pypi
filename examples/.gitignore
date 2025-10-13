@@ -1,5 +1,8 @@
 # Don't add potential products of the example code
 **/*.[Ss][Vv][Gg]
 **/*.[Pp][Ll][Yy]
-**/*.[Vv][Kk][Tt]
+**/*.[Ss][Tt][Ll]
+**/*.[Jj][Ss][Oo][Nn]
 **/*.txt
+
+!printables/elliptical_left_wing_256mm.json

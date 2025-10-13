@@ -4,10 +4,10 @@ from shapely.geometry import Point
 import pyvista as pv
 
 from wingwalker.build_params.wing_request import WingRequest
-from wingwalker.generators.elliptical import EllipticalFunctor
-from wingwalker.generators.geometric import GeometricFunctor
+from wingwalker.generators.elliptical import EllipticalFunctor, EllipticalSectionFunctor
+from wingwalker.generators.geometric import GeometricFunctor, GeometricSectionFunctor
 from wingwalker.generators.iterators import TIterator
-from wingwalker.generators.rectangular import RectangularFunctor
+from wingwalker.generators.rectangular import RectangularFunctor, RectangularSectionFunctor
 from wingwalker.models.airfoil_section import AirfoilSection
 from wingwalker.models.airfoil_specs import AirfoilSpecs
 from wingwalker.models.enums import Planform
@@ -23,7 +23,7 @@ def get_lambdas(build_params: WingRequest):
         build_params: Specifications for the wing to be built
 
     Returns:
-        Tuple of (in order): chord(t), twist(t), z(t)
+        Tuple of (in order): chord(t), twist(t), z(t), area()
     """
     match build_params.planform:
         case Planform.RECTANGULAR:
@@ -37,6 +37,31 @@ def get_lambdas(build_params: WingRequest):
             return geo.chord_func(), geo.twist_func(), geo.z_func(), geo.area_func()
         case _:
             raise ValueError(f'Unknown planform {build_params.planform.name}')
+
+def get_section_lambdas(build_params: WingRequest, idx: int):
+    """
+    Functino to return the correct set of chord(t), twist(t), z(t) lambdas for the given subsection of the request
+    Args:
+        build_params: Specifications for the entire wing to be built
+        sections: array of section size/weight values.  Will be normalized under the hood
+        idx: Index of the current subsection
+
+    Returns:
+        tuple of (in order): chord(t), twist(t), z(t), area()
+    """
+    match build_params.planform:
+        case Planform.RECTANGULAR:
+            rect = RectangularSectionFunctor(build_params=build_params, idx=idx)
+            return rect.chord_func(), rect.twist_func(), rect.z_func(), rect.area_func()
+        case Planform.ELLIPSE:
+            ell = EllipticalSectionFunctor(build_params=build_params, idx=idx)
+            return ell.chord_func(), ell.twist_func(), ell.z_func(), ell.area_func()
+        case Planform.GEOMETRIC:
+            geo = GeometricSectionFunctor(build_params=build_params, idx=idx)
+            return geo.chord_func(), geo.twist_func(), geo.z_func(), geo.area_func()
+        case _:
+            raise ValueError(f'Unknown planform {build_params.planform.name}')
+
 
 def get_airfoil_specs(build_params: WingRequest)->AirfoilSpecs:
     """
@@ -149,9 +174,63 @@ def generate_wing_model(wing_req)->WingModel:
     # Get lambdas
     c_func, t_func, z_func, area_func = get_lambdas(wing_req)
     # Generate the actual wing model
-    wing_model = generate_wing(wing_req, af_specs, c_func, t_func, z_func, area_func)
+    wing_model = generate_wing(
+        wing_params=wing_req,
+        af_specs=af_specs,
+        c_func=c_func,
+        twist_func=t_func,
+        z_func=z_func,
+        area_func=area_func
+    )
     return wing_model
 
+def generate_wing_subsection(wing_req: WingRequest, idx: int)->WingModel:
+    """
+    Generate a wing subsection from the given specs
+    Args:
+        wing_req: WingRequest object representing the required specs
+        idx: Current subsection index to be generated
+
+    Returns:
+        WingModel containing the subsection values and specs
+    """
+    # load specs
+    af_specs = get_airfoil_specs(wing_req)
+    # get lambdas
+    c_func, t_func, z_func, area_func = get_section_lambdas(wing_req, idx)
+    # generate section of wing
+    wing_section = generate_wing(
+        wing_params=wing_req,
+        af_specs=af_specs,
+        c_func=c_func,
+        twist_func=t_func,
+        z_func=z_func,
+        area_func=area_func
+    )
+    return wing_section
+
+def create_wing(wing_req: WingRequest) -> WingModel | list[WingModel]:
+    """
+    Convenience function for creating a wing, either whole or in subsections, from the given specs
+    Args:
+        wing_req:
+            WingRequest object representing the required specs
+    Returns:
+        If wing_req.sections is null or empty, WingModel instance containing the entire 3D model; otherwise,
+        returns a list of WingModels representing the sections
+    """
+    af_specs = get_airfoil_specs(wing_req)
+    if wing_req.sections is None or wing_req.sections == [] or len(wing_req.sections) == 0:
+        whole_model = generate_wing_model(wing_req)
+        return whole_model
+    else:
+        # Gather up the subsections
+        wing_sections: list[WingModel] = []
+        for idx, part in enumerate(wing_req.sections):
+            section = generate_wing_subsection(wing_req, idx)
+            wing_sections.append(section)
+        # Give back the model pieces
+        return wing_sections
 
 def generate_point_cloud_array(model: WingModel)->np.ndarray:
     """
@@ -190,3 +269,4 @@ def generate_point_cloud_polydata(model: WingModel)->PolyData:
     wing_points = generate_point_cloud_array(model)
     wing_cloud = pv.PolyData(wing_points)
     return wing_cloud
+

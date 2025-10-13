@@ -10,5 +10,10 @@
     "spec_file": "../../data/selig_supercritical_nasa-sc2-1010.dat",
     "spec_format": "selig",
     "twist": -0.04,
-    "wing_type": "WING,LEFT"
+    "wing_type": "WING,LEFT",
+    "sections": [
+      128.0,
+      64.0,
+      64.0
+    ]
 }

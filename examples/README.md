@@ -140,6 +140,11 @@ That PLY file can be imported into a MeshLab project, where it can be further pr
 
 ![View of PLY file in MeshLab](.screenshots/meshlab_snapshot00.png)
 
+#### `generate_stl_sections.py`
+
+This script demonstrates generate and print a wing in sections, each in its own STL file.  This is particularly useful when
+the entire wing exceeds the volume bounds of the 3D printer's workspace.  
+
 ### Directory `examples/svg`
 
 This subdirectory contains examples on how to use the SVG generation capabilities. This is a basic operation for 
