@@ -18,15 +18,15 @@ def call_gen_wing(wing_req: WingRequest)->WingModel:
     """
     # load specs
     af_specs = get_airfoil_specs(wing_req)
-    assert af_specs is not None, f'AirfoilSpecs failed to load'
+    assert af_specs is not None, 'AirfoilSpecs failed to load'
 
     # Get lambdas
     c_func, t_func, z_func, area_func = get_lambdas(wing_req)
 
-    assert c_func is not None, f'chord lambda failed to load'
-    assert t_func is not None, f'twist lambda failed to load'
-    assert z_func is not None, f'z lambda failed to load'
-    assert area_func is not None, f'area lambda failed to load'
+    assert c_func is not None, 'chord lambda failed to load'
+    assert t_func is not None, 'twist lambda failed to load'
+    assert z_func is not None, 'z lambda failed to load'
+    assert area_func is not None, 'area lambda failed to load'
 
     # Generate the actual wing model
     wing_model = generate_wing(wing_req, af_specs, c_func, t_func, z_func, area_func)
@@ -55,7 +55,7 @@ def get_standard_elliptical(wing_dir: WingType)->WingModel:
 
     wing_model: WingModel = call_gen_wing(wing_req)
 
-    assert wing_model is not None, f'Elliptical wing generation failed'
+    assert wing_model is not None, 'Elliptical wing generation failed'
     print(wing_model.__repr__())
     return wing_model
 
@@ -82,7 +82,7 @@ def get_standard_rectangular(wing_dir: WingType) -> WingModel:
 
     wing_model: WingModel = call_gen_wing(wing_req)
 
-    assert wing_model is not None, f'Rectangular wing generation failed'
+    assert wing_model is not None, 'Rectangular wing generation failed'
     print(wing_model.__repr__())
     return wing_model
 
@@ -108,7 +108,7 @@ def get_standard_geometric(wing_dir: WingType) -> WingModel:
 
     wing_model: WingModel = call_gen_wing(wing_req)
 
-    assert wing_model is not None, f'Geometric wing generation failed'
+    assert wing_model is not None, 'Geometric wing generation failed'
     print(wing_model.__repr__())
     return wing_model
 

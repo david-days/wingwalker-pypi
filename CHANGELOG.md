@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.0 (10/12/2025)
+
+- Added parsing and auto-generation of sectioned wings
+- Added convenience method that inspects the specs and takes the appropriate action
+- Added example for the sectioned-wing process
+- Added testing for sections
+
 ## v0.9.0 (09/27/2025)
 
 - Added full wing model generation

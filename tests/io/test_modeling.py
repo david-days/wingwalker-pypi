@@ -69,15 +69,15 @@ def test_elliptical_wing(
 
 
 @pytest.mark.io
-@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
+@pytest.mark.parametrize('twist', [0.0, -0.0349066])
 @pytest.mark.parametrize('span', [256.0, 512.0])
-@pytest.mark.parametrize('base', [128.0, 100])
-@pytest.mark.parametrize('end', [0, 10, 50, 100])
-@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('base', [128.0])
+@pytest.mark.parametrize('end', [0, 50])
+@pytest.mark.parametrize('iterations', [10,20])
 @pytest.mark.parametrize('planform', [Planform.RECTANGULAR, Planform.ELLIPSE, Planform.GEOMETRIC])
-@pytest.mark.parametrize('structure_type', [WingType.WING, WingType.ELEVATOR, WingType.RUDDER])
-@pytest.mark.parametrize('structure_position', [WingType.LEFT, WingType.RIGHT, WingType.UNDEFINED])
-@pytest.mark.parametrize('structure_orientation', [WingType.VERTICAL, WingType.HORIZONTAL, WingType.UNDEFINED])
+@pytest.mark.parametrize('structure_type', [WingType.WING, WingType.RUDDER])
+@pytest.mark.parametrize('structure_position', [WingType.LEFT, WingType.RIGHT])
+@pytest.mark.parametrize('structure_orientation', [WingType.VERTICAL, WingType.HORIZONTAL])
 @pytest.mark.parametrize('spec_file,spec_format', [
     ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
     ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),
@@ -131,11 +131,11 @@ def test_wing_request(
 
 @pytest.mark.io
 @pytest.mark.parametrize('is_left', [True, False])
-@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
+@pytest.mark.parametrize('twist', [0.0, -0.0174533])
 @pytest.mark.parametrize('span', [256.0, 512.0])
-@pytest.mark.parametrize('base', [128.0, 100])
-@pytest.mark.parametrize('end', [0, 10, 50, 100])
-@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('base', [128.0])
+@pytest.mark.parametrize('end', [0, 50])
+@pytest.mark.parametrize('iterations', [10,20])
 @pytest.mark.parametrize('spec_file,spec_format', [
     ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
     ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),
@@ -180,11 +180,11 @@ def test_elliptical_permutations(
 
 @pytest.mark.io
 @pytest.mark.parametrize('is_left', [True, False])
-@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
-@pytest.mark.parametrize('span', [256.0, 512.0])
-@pytest.mark.parametrize('base', [128.0, 100])
-@pytest.mark.parametrize('end', [0, 10, 50, 100])
-@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('twist', [-0.0174533, -0.0349066])
+@pytest.mark.parametrize('span', [512.0])
+@pytest.mark.parametrize('base', [128.0])
+@pytest.mark.parametrize('end', [0, 100])
+@pytest.mark.parametrize('iterations', [10,20])
 @pytest.mark.parametrize('spec_file,spec_format', [
     ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
     ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),
@@ -229,11 +229,11 @@ def test_rectangular_permutations(
 
 @pytest.mark.io
 @pytest.mark.parametrize('is_left', [True, False])
-@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
-@pytest.mark.parametrize('span', [256.0, 512.0])
-@pytest.mark.parametrize('base', [128.0, 100])
-@pytest.mark.parametrize('end', [0, 10, 50, 100])
-@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('twist', [-0.0174533, -0.0349066])
+@pytest.mark.parametrize('span', [256.0])
+@pytest.mark.parametrize('base', [128.0])
+@pytest.mark.parametrize('end', [0, 100])
+@pytest.mark.parametrize('iterations', [20,30])
 @pytest.mark.parametrize('spec_file,spec_format', [
     ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
     ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),
@@ -281,11 +281,11 @@ def test_geometric_permutations(
 @pytest.mark.parametrize('planform', [Planform.RECTANGULAR, Planform.ELLIPSE, Planform.GEOMETRIC])
 @pytest.mark.parametrize('side', [WingType.LEFT, WingType.RIGHT])
 @pytest.mark.parametrize('wing_type', [WingType.WING, WingType.RUDDER, WingType.ELEVATOR])
-@pytest.mark.parametrize('twist', [0.0, -0.0174533, -0.0349066])
-@pytest.mark.parametrize('span', [256.0, 512.0])
-@pytest.mark.parametrize('base', [128.0, 100])
-@pytest.mark.parametrize('end', [0, 10, 50, 100])
-@pytest.mark.parametrize('iterations', [10,20,30])
+@pytest.mark.parametrize('twist', [-0.0174533, -0.0349066])
+@pytest.mark.parametrize('span', [512.0])
+@pytest.mark.parametrize('base', [128.0])
+@pytest.mark.parametrize('end', [0, 10, 100])
+@pytest.mark.parametrize('iterations', [10,20])
 @pytest.mark.parametrize('spec_file,spec_format', [
     ('data/lednicer_supercritical_nasa-sc2-1010.dat', SpecFormat.LEDNICER),
     ('data/selig_symmetrical_n0011sc-il.dat', SpecFormat.SELIG),

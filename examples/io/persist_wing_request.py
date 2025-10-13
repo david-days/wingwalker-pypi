@@ -15,7 +15,7 @@ assembly of airfoils and control surfaces, to be called later for actual generat
 wing_req: WingRequest = WingRequest()
 wing_req.name = 'Test write wing request'
 wing_req.planform = Planform.GEOMETRIC
-wing_req.wing_type = WingType.LEFT | WingType.HORIZONTAL | WingType.STABILIZER
+wing_req.wing_type = WingType.LEFT | WingType.ELEVATOR
 wing_req.span = 96.0
 wing_req.base_chord = 64.0
 wing_req.end_chord = 64.0
